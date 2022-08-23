@@ -1,5 +1,6 @@
 // INIT ==========================================================================
 const chatroom = document.querySelector(".chatroom");
+let userName = "";
 
 // LOGIN ===========================================================================
 const loginForm = document.forms[0];
@@ -8,6 +9,7 @@ const loginButton = loginForm.querySelector("button");
 const loginSubmit = loginForm.querySelector(".submit");
 const loginLoading = loginForm.querySelector(".loading");
 const urlLogin = "https://mock-api.driven.com.br/api/v6/uol/participants";
+const urlStatus = "https://mock-api.driven.com.br/api/v6/uol/status";
 
 loginForm.addEventListener("submit", validateLogin);
 loginInput.addEventListener("input", updateButton);
@@ -16,23 +18,36 @@ function validateLogin(e) {
     e.preventDefault();
     loginSubmit.classList.add("hide");
     loginLoading.classList.remove("hide");
-
+    
     const obj = {
         name: loginInput.value,
     };
     const data = createPostData(obj);
-
+    
     fetch(urlLogin, data).then(response => {
         if (response.ok) {
+            userName = loginInput.value;
             loginForm.classList.add("fade");
             setTimeout(() => loginForm.classList.add("hide"), 1000);
+            setInterval(() => refreshStatus(obj), 5000);
             // REFACTOR
+            updateMessages();
             chatroom.classList.remove("hide");
             chat.children[chat.children.length - 1].scrollIntoView();
         } else {
             loginSubmit.classList.remove("hide");
             loginLoading.classList.add("hide");
         }
+    });
+}
+
+function refreshStatus(obj) {
+    // console.log("WAT");
+    const data = createPostData(obj);
+    fetch(urlStatus, data)
+    .then(response => {
+        // if (response.ok) console.log("DEU BOM");
+        // else console.log("DEU RUIM");
     });
 }
 
@@ -44,10 +59,10 @@ function updateButton(e) {
 // CHAT ==========================================================================
 const chat = document.querySelector(".chat");
 const urlMessages = "https://mock-api.driven.com.br/api/v6/uol/messages";
-setInterval(parseMessages, 3000);
-parseMessages();
+setInterval(updateMessages, 3000);
+updateMessages();
 
-function parseMessages() {
+function updateMessages() {
     fetch(urlMessages)
     .then((response) => response.json())
     .then((data) => {
@@ -55,6 +70,30 @@ function parseMessages() {
         data.forEach((e) => fragment.appendChild(createMessage(e)));
         chat.replaceChildren(fragment);
         chat.children[chat.children.length - 1].scrollIntoView();
+    });
+}
+
+const chatbox = document.forms[1];
+const messagebox = chatbox.elements["messagebox"];
+chatbox.addEventListener("submit", submitMessage);
+
+function submitMessage(e) {
+    e.preventDefault();
+
+    const obj = {
+        from: userName,
+        to: "Todos",
+        text: messagebox.value,
+        type: "message" // ou "private_message" para o bônus
+    };
+
+    messagebox.value = "";
+    const data = createPostData(obj);
+
+    fetch(urlMessages, data).then(response => {
+        if (response.ok) {
+            updateMessages();
+        }
     });
 }
 
@@ -73,7 +112,7 @@ function createMessage(obj) {
 
     const span = document.createElement("span");
     switch (obj.type) {
-        case "status": span.textContent = " entra na sala..."; break;
+        case "status": span.textContent = " " + obj.text; break;
         case "message": span.textContent = " para "; break;
         case "private_message": span.textContent = " reservadamente para "; break;
     }
@@ -89,7 +128,7 @@ function createMessage(obj) {
 
         const text = document.createElement("span");
         text.classList.add("text");
-        text.textContent = `: ${obj.message}`;
+        text.textContent = `: ${obj.text}`;
 
         message.appendChild(contact);
         message.appendChild(text);
