@@ -9,10 +9,50 @@
       <link rel="stylesheet" href="./assets/css/reset.css">
       <link rel="stylesheet" href="./assets/css/style.css">
       <script src="./assets/js/script.js" defer></script>
+      <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
 
       <title>Bate-Papo UOL</title>
   </head>
 
   <body>
+    <!-- LOGIN ================================================================ -->
+    <form class="login">
+      <img src="./assets/images/logo.png" alt="">
+      <div class="submit">
+        <input type="text" name="name" placeholder="Digite seu nome" required>
+        <button>Entrar</button>
+      </div>
+      <div class="loading hide">
+        <img src="./assets/images/spinner.gif" alt="">
+        <p>Entrando...</p>
+      </div>
+    </form>
+
+    <!-- CHAT ROOM -->
+    <div class="chatroom hide">
+      <header>
+        <img src="./assets/images/logo.png" alt="">
+        <ion-icon name="people"></ion-icon>
+      </header>
+
+      <main>
+        <div class="chat">
+          <!-- <div class="status">
+            <span class="time">(09:21:45)</span> <span class="user">João</span> entra na sala...
+          </div>
+          <div class="message">
+            <span class="time">(09:21:45)</span> <span class="user">João</span> para <span class="contact">Todos</span>: <span class="text">Bom dia</span>
+          </div>
+          <div class="private-message">
+            <span class="time">(09:21:45)</span> <span class="user">João</span> reservadamente para <span class="contact">Maria</span>: <span class="text">Bom dia</span>
+          </div> -->
+        </div>
+      </main>
+
+      <footer>
+
+      </footer>
+
+    </div>
   </body>
 </html>
