@@ -16,6 +16,10 @@ ul {
   margin: 0;
 }
 
+input {
+  appearance: none;
+}
+
 /* LOGIN ======================================================================================== */
 .login {
   z-index: 2;
@@ -170,7 +174,7 @@ main {
   padding: 16px 32px;
   display: flex;
   align-items: center;
-  
+
   background-color: #FFFFFF;
   box-shadow: 0px -4px 6px rgba(0, 0, 0, 0.05);
 }
@@ -195,11 +199,89 @@ main {
   line-height: 0;
 }
 
+/* SIDEBAR =========================================== */
+aside {
+  z-index: 2;
+  position: fixed;
+  left: 0;
+  top: 0;
+  font-size: 16px;
+}
+
+aside .bg {
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.6);
+  transition: opacity 0.5s;
+}
+
+aside form {
+  z-index: 3;
+  position: fixed;
+  width: 300px;
+  height: 100%;
+  right: 0;
+  top: 0;
+  background-color: white;
+  transition: transform 0.5s;
+}
+
+aside fieldset {
+  margin: 30px 15px;
+  font-weight: bold;
+}
+
+aside legend {
+  text-align: center;
+  padding: 0 25px;
+}
+
+aside ul {
+  font-weight: normal;
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+aside ion-icon {
+  font-size: 20px;
+  margin-right: 8px;
+  line-height: 0;
+  margin-bottom: 2px;
+}
+
+aside label {
+  /* REFACTOR TO 'display: block' ONLY */
+  display: inline-flex;
+  align-items: center;
+  width: 90%;
+}
+
+input:checked+label::after {
+  content: "✔";
+  position: fixed;
+  right: 30px;
+  color: #28BB25;
+  font-weight: bold;
+}
+
 /* OTHERS ============================================================================================ */
 .fade {
   opacity: 0;
 }
 
+.slide {
+  transform: translateX(100%);
+}
+
 .hide {
   display: none;
+}
+
+.statistics {
+  position: fixed;
+  left: 20px;
+  top: 20px;
+  z-index: 100;
 }

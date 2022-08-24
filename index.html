@@ -1,48 +1,87 @@
 <!DOCTYPE html>
 
 <html lang="pt-BR">
-  <head>
-      <meta charset="UTF-8">
-      <meta http-equiv="X-UA-Compatible" content="IE=edge">
-      <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-      <link rel="stylesheet" href="./assets/css/reset.css">
-      <link rel="stylesheet" href="./assets/css/style.css">
-      <script src="./assets/js/script.js" defer></script>
-      <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-      <title>Bate-Papo UOL</title>
-  </head>
+  <link rel="stylesheet" href="./assets/css/reset.css">
+  <link rel="stylesheet" href="./assets/css/style.css">
+  <script src="./assets/js/script.js" defer></script>
+  <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
 
-  <body>
-    <!-- LOGIN ================================================================ -->
-    <form class="login">
-      <img src="./assets/images/logo.png" alt="">
-      <div class="submit">
-        <input type="text" name="name" placeholder="Digite seu nome" required>
-        <button>Entrar</button>
-      </div>
-      <div class="loading hide">
-        <img src="./assets/images/spinner.gif" alt="">
-        <p>Entrando...</p>
-      </div>
-    </form>
+  <title>Bate-Papo UOL</title>
+</head>
 
-    <!-- CHATROOM -->
-    <div class="chatroom hide">
-      <header>
-        <img src="./assets/images/logo.png" alt="">
-        <ion-icon name="people"></ion-icon>
-      </header>
-
-      <main>
-        <div class="chat"></div>
-      </main>
-
-      <form class="chatbox">
-        <input type="text" name="messagebox" placeholder="Escreva aqui..." autocomplete="off" required>
-        <button><ion-icon name="paper-plane-outline"></ion-icon></button>
-      </form>
+<body>
+  <!-- LOGIN ================================================================ -->
+  <form class="login">
+    <img src="./assets/images/logo.png" alt="">
+    <div class="submit">
+      <input type="text" name="name" placeholder="Digite seu nome" required>
+      <button>Entrar</button>
     </div>
-  </body>
+    <div class="loading hide">
+      <img src="./assets/images/spinner.gif" alt="">
+      <p>Entrando...</p>
+    </div>
+  </form>
+
+  <!-- CHATROOM -->
+  <div class="chatroom hide">
+    <header>
+      <img src="./assets/images/logo.png" alt="">
+      <ion-icon name="people" onclick="showSidebar()"></ion-icon>
+    </header>
+
+    <main>
+      <div class="chat" onscroll="scrolling()"></div>
+    </main>
+
+    <form class="chatbox">
+      <input type="text" name="messagebox" placeholder="Escreva aqui..." autocomplete="off" required>
+      <button>
+        <ion-icon name="paper-plane-outline"></ion-icon>
+      </button>
+    </form>
+  </div>
+
+  <!-- SIDEBAR -->
+  <aside class="hide">
+    <div class="bg fade" onclick="hideSidebar()"></div>
+    <form class="slide">
+      <!-- PARTICIPANTS -->
+      <fieldset>
+        <legend>Escolha um contato para enviar mensagem:</legend>
+        <ul class="user-list">
+        </ul>
+      </fieldset>
+
+      <!-- VISIBILITY -->
+      <fieldset>
+        <legend>Escolha a visibilidade:</legend>
+        <ul>
+          <li>
+            <input type="radio" id="public" name="visibility" data-identifier="visibility" checked required>
+            <label for="public" onclick="updateVisibility(this)">
+              <ion-icon name="lock-open"></ion-icon>
+              <span>Público</span>
+            </label>
+          </li>
+          <li>
+            <input type="radio" id="private" name="visibility" data-identifier="visibility">
+            <label for="private" onclick="updateVisibility(this)">
+              <ion-icon name="lock-closed"></ion-icon>
+              <span>Reservadamente</span>
+            </label>
+          </li>
+        </ul>
+      </fieldset>
+    </form>
+  </aside>
+  
+</body>
+
 </html>
