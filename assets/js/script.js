@@ -66,6 +66,7 @@ function updateButton(e) {
 
 // CHAT ==========================================================================
 const chat = document.querySelector(".chat");
+let percent = 0;
 
 function updateMessages() {
     fetch(urlMessages)
@@ -102,7 +103,7 @@ function submitMessage(e) {
     fetch(urlMessages, data).then(response => {
         if (response.ok) {
             updateMessages();
-            // chat.children[chat.children.length - 1].scrollIntoView();
+            chat.children[chat.children.length - 1].scrollIntoView();
         } else window.location.reload();
     }).catch(error => window.location.reload());
 }
@@ -110,6 +111,7 @@ function submitMessage(e) {
 // SIDEBAR ==============================================================================================
 const sidebar = document.forms[2];
 const userList = sidebar.querySelector(".user-list");
+const small = document.querySelector("small");
 let userSelected = "Todos";
 let visibility = "public";
 
@@ -127,16 +129,18 @@ function updateParticipants() {
             if (e.name === userSelected) { found = true; user.children[0].checked = true; };
         });
         userList.replaceChildren(fragment);
-        if (!found) { userSelected = "Todos"; userList.children[0].children[0].checked = true; };
+        if (!found) { userSelected = "Todos"; small.children[0].textContent = userSelected; userList.children[0].children[0].checked = true; };
     }).catch(error => console.log(error));
 }
 
 function updateSelected() {
     userSelected = this.htmlFor;
+    small.children[0].textContent = userSelected;
 }
 
 function updateVisibility(tag) {
     visibility = tag.htmlFor;
+    small.children[1].textContent = `(${tag.children[1].textContent.toLowerCase()})`;
 }
 
 const aside = document.querySelector("aside");
@@ -234,7 +238,6 @@ function createPostData(obj) {
 }
 
 // STATISTICS
-let percent = 0;
 let time = 0;
 let interval;
 

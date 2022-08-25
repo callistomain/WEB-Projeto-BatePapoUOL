@@ -80,6 +80,7 @@ input {
   border: none;
   background-color: #E7E7E7;
   border-radius: 9px;
+  transition: all 0.1s;
 }
 
 .submit .valid {
@@ -185,10 +186,12 @@ main {
   outline: none;
   border: none;
   font-size: 18px;
+  margin-top: -10px;
 }
 
 .chatbox input::placeholder {
   font-style: italic;
+  color: #3c3c3c;
 }
 
 .chatbox button {
@@ -197,6 +200,15 @@ main {
   background-color: transparent;
   border: none;
   line-height: 0;
+}
+
+.chatbox small {
+    position: fixed;
+    left: 34px;
+    bottom: 14px;
+    font-size: 14px;
+    font-weight: 300;
+    user-select: none;
 }
 
 /* SIDEBAR =========================================== */
