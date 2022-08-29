@@ -283,7 +283,7 @@ aside span {
 
 input:checked+label::after {
   content: "✔";
-  position: fixed;
+  position: absolute;
   right: 30px;
   color: #28BB25;
   font-weight: bold;
