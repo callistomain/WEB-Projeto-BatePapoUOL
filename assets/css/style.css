@@ -257,6 +257,12 @@ aside ul {
   gap: 5px;
 }
 
+aside .user-list {
+  max-height: calc(100vh - 240px);
+  position: relative;
+  overflow-y: scroll;
+}
+
 aside ion-icon {
   font-size: 20px;
   margin-right: 8px;
@@ -271,8 +277,8 @@ aside label {
 }
 
 aside span {
-    word-wrap: break-word;
-    width: 200px;
+  word-wrap: break-word;
+  width: 200px;
 }
 
 input:checked+label::after {
