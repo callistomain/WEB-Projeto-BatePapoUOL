@@ -57,9 +57,15 @@ function validateLogin(e) {
 function updateStatus(obj) {
     const data = createPostData(obj);
     fetch(urlStatus, data)
+    .then(response => {
+        if (!response.ok) {
+            window.location.reload();
+            alert("Problema de conexão, você foi desconectado.");
+        }
+    })
     .catch(error => {
         window.location.reload();
-        alert("Problema de conexão, você foi desconectado.")
+        alert("Problema de conexão, você foi desconectado.");
     });
 }
 
@@ -110,9 +116,15 @@ function submitMessage(e) {
 
     fetch(urlMessages, data).then(response => {
         updateMessages(true);
-    }).catch(error => {
+    }).then(response => {
+        if (!response.ok) {
+            window.location.reload();
+            alert("Problema de conexão, você foi desconectado.");
+        }
+    })
+    .catch(error => {
         window.location.reload();
-        alert("Problema de conexão, você foi desconectado.")
+        alert("Problema de conexão, você foi desconectado.");
     });
 }
 
