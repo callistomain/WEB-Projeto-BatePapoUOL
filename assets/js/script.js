@@ -56,7 +56,11 @@ function validateLogin(e) {
 // Status
 function updateStatus(obj) {
     const data = createPostData(obj);
-    fetch(urlStatus, data);
+    fetch(urlStatus, data)
+    .catch(error => {
+        window.location.reload();
+        alert("Problema de conexão, você foi desconectado.")
+    });
 }
 
 // Login Button
