@@ -1,4 +1,7 @@
 // INIT ==========================================================================
+const urlParticipants = "https://mock-api.driven.com.br/api/v6/uol/participants";
+const urlMessages = "https://mock-api.driven.com.br/api/v6/uol/messages";
+const urlStatus = "https://mock-api.driven.com.br/api/v6/uol/status";
 const chatroom = document.querySelector(".chatroom");
 let userName = "";
 
@@ -8,57 +11,55 @@ const loginInput = loginForm.elements["name"];
 const loginButton = loginForm.querySelector("button");
 const loginSubmit = loginForm.querySelector(".submit");
 const loginLoading = loginForm.querySelector(".loading");
-const urlParticipants = "https://mock-api.driven.com.br/api/v6/uol/participants";
-const urlStatus = "https://mock-api.driven.com.br/api/v6/uol/status";
-const urlMessages = "https://mock-api.driven.com.br/api/v6/uol/messages";
 
 loginForm.addEventListener("submit", validateLogin);
 loginInput.addEventListener("input", updateButton);
 updateParticipants();
-updateMessages();
+updateMessages(true);
 
 function validateLogin(e) {
     e.preventDefault();
     loginSubmit.classList.add("hide");
     loginLoading.classList.remove("hide");
     
-    const obj = {
-        name: loginInput.value,
-    };
+    const obj = { name: loginInput.value };
     const data = createPostData(obj);
     
-    fetch(urlParticipants, data).then(response => {
+    fetch(urlParticipants, data)
+    .then(response => {
         if (response.ok) {
             userName = loginInput.value;
+            // Animation
             loginForm.classList.add("fade");
             setTimeout(() => loginForm.classList.add("hide"), 1000);
-            setInterval(() => refreshStatus(obj), 5000);
-            // REFACTOR
+            // Intervals
+            setInterval(updateStatus, 5000, obj);
             setInterval(updateMessages, 3000);
             setInterval(updateParticipants, 5000);
+            // Immediate update
+            updateParticipants();
+            updateMessages(true);
+            // Show chatroom
             chatroom.classList.remove("hide");
-            chat.children[chat.children.length - 1].scrollIntoView();
         } else {
-            // <SMALL> NOME INVALIDO
             loginSubmit.classList.remove("hide");
             loginLoading.classList.add("hide");
+            alert("Nome já em uso, tente outro.")
         }
     }).catch(error => {
         loginSubmit.classList.remove("hide");
         loginLoading.classList.add("hide");
+        alert("Erro de conexão de internet!")
     });
 }
 
-function refreshStatus(obj) {
-    // console.log("WAT");
+// Status
+function updateStatus(obj) {
     const data = createPostData(obj);
-    fetch(urlStatus, data)
-    .then(response => {
-        // if (response.ok) console.log("DEU BOM");
-        // else console.log("DEU RUIM");
-    });
+    fetch(urlStatus, data);
 }
 
+// Login Button
 function updateButton(e) {
     if (loginForm.checkValidity()) loginButton.classList.add("valid");
     else loginButton.classList.remove("valid");
@@ -66,23 +67,26 @@ function updateButton(e) {
 
 // CHAT ==========================================================================
 const chat = document.querySelector(".chat");
-let percent = 0;
+let chatPercent;
 
-function updateMessages() {
+function updateMessages(scrollToLast) {
     fetch(urlMessages)
-    .then((response) => response.json())
-    .then((data) => {
+    .then(response => response.json())
+    .then(data => {
         const fragment = document.createDocumentFragment();
+        data.sort(sortMessages);
         data.forEach(e => {
             if (e.type === "private_message" && e.from !== userName && e.to !== userName && e.to !== "Todos") return;
             fragment.appendChild(createMessage(e));
         });
         chat.replaceChildren(fragment);
-        // REFACTOR
-        if (percent > 90 && time <= 0) chat.children[chat.children.length - 1].scrollIntoView();
-    }).catch(error => console.log(error)); // put a five turn count to refresh page
+
+        // Scroll to last
+        if (scrollToLast || chatPercent > 90) chat.children[chat.children.length - 1].scrollIntoView();
+    });
 }
 
+// Chatbox
 const chatbox = document.forms[1];
 const messagebox = chatbox.elements["messagebox"];
 chatbox.addEventListener("submit", submitMessage);
@@ -101,48 +105,60 @@ function submitMessage(e) {
     const data = createPostData(obj);
 
     fetch(urlMessages, data).then(response => {
-        if (response.ok) {
-            updateMessages();
-            chat.children[chat.children.length - 1].scrollIntoView();
-        } else window.location.reload();
-    }).catch(error => window.location.reload());
+        updateMessages(true);
+    }).catch(error => {
+        window.location.reload();
+        alert("Problema de conexão, você foi desconectado.")
+    });
 }
 
 // SIDEBAR ==============================================================================================
 const sidebar = document.forms[2];
 const userList = sidebar.querySelector(".user-list");
-const small = document.querySelector("small");
+const chatboxInfo = document.querySelector("small");
 let userSelected = "Todos";
 let visibility = "public";
 
-// REFACTOR !!!!!!!!
 function updateParticipants() {
     fetch(urlParticipants)
-    .then((response) => response.json())
-    .then((data) => {
+    .then(response => response.json())
+    .then(data => { // Manual check and "all" user fallback
         const fragment = document.createDocumentFragment();
-        let found = false;
+        let selectedFound = false;
+        
         data.unshift({ name: "Todos" });
         data.forEach(e => {
             const user = createParticipant(e);
             fragment.appendChild(user);
-            if (e.name === userSelected) { found = true; user.children[0].checked = true; };
+
+            if (e.name === userSelected) {
+                selectedFound = true;
+                user.children[0].checked = true;
+            };
         });
         userList.replaceChildren(fragment);
-        if (!found) { userSelected = "Todos"; small.children[0].textContent = userSelected; userList.children[0].children[0].checked = true; };
-    }).catch(error => console.log(error));
+        
+        if (!selectedFound) {
+            userSelected = "Todos";
+            chatboxInfo.children[0].textContent = userSelected;
+            userList.children[0].children[0].checked = true;
+        };
+        
+    });
 }
 
+// Onclick
 function updateSelected() {
     userSelected = this.htmlFor;
-    small.children[0].textContent = userSelected;
+    chatboxInfo.children[0].textContent = userSelected;
 }
 
 function updateVisibility(tag) {
     visibility = tag.htmlFor;
-    small.children[1].textContent = `(${tag.children[1].textContent.toLowerCase()})`;
+    chatboxInfo.children[1].textContent = `(${tag.children[1].textContent.toLowerCase()})`;
 }
 
+// Animation
 const aside = document.querySelector("aside");
 const bg = document.querySelector(".bg");
 
@@ -205,19 +221,19 @@ function createParticipant(obj) {
 
     const input = document.createElement("input");
     input.type = "radio";
-    input.id = obj.name; // id
+    input.id = obj.name;
     input.name = "participant";
     input.setAttribute("data-identifier", "participant");
 
     const label = document.createElement("label");
-    label.htmlFor = obj.name; // id
+    label.htmlFor = obj.name;
 
     const icon = document.createElement("ion-icon");
     icon.setAttribute("name", "person-circle");
     if (obj.name === "Todos") icon.setAttribute("name", "people");
 
     const span = document.createElement("span");
-    span.textContent = obj.name; // id
+    span.textContent = obj.name;
 
     label.appendChild(icon);
     label.appendChild(span);
@@ -237,21 +253,13 @@ function createPostData(obj) {
     };
 }
 
-// STATISTICS
-let time = 0;
-let interval;
+function sortMessages(a, b) {
+    if (a.time === b.time) return a.from.localeCompare(b.from);
+}
 
 function scrolling() {
     let height = chat.clientHeight;
     let scrollHeight = chat.scrollHeight - height;
     let scrollTop = chat.scrollTop;
-    percent = Math.floor(scrollTop / scrollHeight * 100);
-
-    // REFACTOR
-    time = 1000;
-    clearInterval(interval);
-    interval = setInterval(() => {
-        time -= 100;
-        if (time <= 0) clearInterval(interval);
-    }, 100);
+    chatPercent = Math.floor(scrollTop / scrollHeight * 100);
 }

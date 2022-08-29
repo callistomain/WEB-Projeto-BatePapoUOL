@@ -138,6 +138,7 @@ main {
   flex-direction: column;
   gap: 5px;
   overflow-y: scroll;
+  word-wrap: break-word;
 }
 
 .chat div {
@@ -264,10 +265,14 @@ aside ion-icon {
 }
 
 aside label {
-  /* REFACTOR TO 'display: block' ONLY */
   display: inline-flex;
   align-items: center;
   width: 90%;
+}
+
+aside span {
+    word-wrap: break-word;
+    width: 200px;
 }
 
 input:checked+label::after {
