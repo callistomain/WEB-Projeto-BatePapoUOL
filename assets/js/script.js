@@ -33,7 +33,7 @@ function validateLogin(e) {
             loginForm.classList.add("fade");
             setTimeout(() => loginForm.classList.add("hide"), 1000);
             // Intervals
-            setInterval(updateStatus, 5000, obj);
+            setInterval(() => updateStatus(obj), 5000);
             setInterval(updateMessages, 3000);
             setInterval(updateParticipants, 5000);
             // Immediate update
