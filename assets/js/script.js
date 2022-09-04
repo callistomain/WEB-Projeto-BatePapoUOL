@@ -92,7 +92,7 @@ function updateMessages(scrollToLast) {
         chat.replaceChildren(fragment);
 
         // Scroll to last
-        if (scrollToLast || chatPercent > 90) chat.children[chat.children.length - 1].scrollIntoView();
+        if (scrollToLast || chatPercent > 80) chat.children[chat.children.length - 1].scrollIntoView();
     });
 }
 
@@ -116,7 +116,6 @@ function submitMessage(e) {
 
     fetch(urlMessages, data).then(response => {
         updateMessages(true);
-    }).then(response => {
         if (!response.ok) {
             window.location.reload();
             alert("Problema de conexão, você foi desconectado.");
